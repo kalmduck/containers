@@ -108,6 +108,46 @@ func TestPushBack(t *testing.T) {
 	}
 }
 
+func TestRemoveEmpty(t *testing.T) {
+	l := New()
+	e := &Element{Value: 0}
+	defer func() {
+		if r := recover(); r != nil {
+			t.Errorf("Panic from deletion: %s\n", r)
+		}
+	}()
+	l.Remove(e)
+}
+
+func TestRemoveSingle(t *testing.T) {
+	l := New()
+	e := l.PushFront(5)
+	v := l.Remove(e)
+	if l.Len() != 0 {
+		t.Error("Remove didn't reduce length")
+	}
+	if vint, ok := v.(int); !ok || vint != 5 {
+		t.Error("Didn't get back the value we expected.")
+	}
+}
+
+func TestRemoveInternal(t *testing.T) {
+	l := New()
+	ef := l.PushFront(1)
+	er := l.PushBack(2)
+	eb := l.PushBack(3)
+	v := l.Remove(er)
+	if l.Len() != 2 {
+		t.Errorf("Expected len: 2\tGot: %d", l.Len())
+	}
+	if vint, ok := v.(int); !ok || vint != 2 {
+		t.Errorf("Expected: 2\tGot: %v", vint)
+	}
+	if ef.Next() != eb || eb.Prev() != ef {
+		t.Error("Other Elements not updated on remove.")
+	}
+}
+
 func Example_forwardIteration() {
 	l := New()
 	for i := 0; i < 5; i++ {
