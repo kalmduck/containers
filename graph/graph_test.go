@@ -48,7 +48,7 @@ func TestRemoveNode(t *testing.T) {
 	if len(g.nodes[0].Edges) != 0 || len(g.nodes[1].Edges) != 1 {
 		t.Error("Node not removed.")
 	}
-	fmt.Println(g)
+	g.RemoveNode(4)
 }
 
 func TestCompleteGraph(t *testing.T) {
