@@ -55,7 +55,9 @@ func (g *Graph) String() string {
 func (n Node) String() string {
 	var buf bytes.Buffer
 	for _, e := range n.Edges {
-		buf.WriteString(strconv.Itoa(n.Value) + " -- " + strconv.Itoa(e) + "; ")
+		if e > n.Value {
+			buf.WriteString(strconv.Itoa(n.Value) + " -- " + strconv.Itoa(e) + "; ")
+		}
 	}
 	buf.WriteString("\n")
 	return buf.String()
