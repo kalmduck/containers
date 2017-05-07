@@ -42,6 +42,30 @@ func (n *Node) addEdge(e int) bool {
 	return true
 }
 
+// RemoveNode cuts a node out of the graph by removing all edges to/from it.
+func (g *Graph) RemoveNode(n int) {
+	if n < 0 || n > len(g.nodes) {
+		return
+	}
+	for _, v := range g.nodes[n].Edges {
+		g.removeEdge(n, v)
+	}
+}
+
+func (g *Graph) removeEdge(a, b int) {
+	g.nodes[a].removeEdge(b)
+	g.nodes[b].removeEdge(a)
+}
+
+func (n *Node) removeEdge(e int) {
+	for i, v := range n.Edges {
+		if v == e {
+			n.Edges = append(n.Edges[:i], n.Edges[i+1:]...)
+			return
+		}
+	}
+}
+
 func (g *Graph) String() string {
 	var buf bytes.Buffer
 	buf.WriteString("strict graph {\n")
