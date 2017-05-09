@@ -16,8 +16,8 @@ func NewCompleteGraph(n int) *Graph {
 	return g
 }
 
-// NewRandomGraph generates a graph with n nodes and density d.
-func NewRandomGraph(n, d int) *Graph {
+// NewRandomDensityGraph generates a graph with n nodes and density d.
+func NewRandomDensityGraph(n, d int) *Graph {
 	g := New(n)
 	rand.Seed(time.Now().UTC().UnixNano())
 	for i := range g.Nodes {
@@ -25,6 +25,20 @@ func NewRandomGraph(n, d int) *Graph {
 			if i != j && rand.Intn(100) <= d {
 				g.AddEdge(i, j)
 			}
+		}
+	}
+	return g
+}
+
+// NewRandomEdgeGraph generates a graph with n nodes and e edges
+func NewRandomEdgeGraph(n, e int) *Graph {
+	g := New(n)
+	rand.Seed(time.Now().UTC().UnixNano())
+	for e > 0 {
+		a := rand.Intn(n)
+		b := rand.Intn(n)
+		if g.AddEdge(a, b) {
+			e--
 		}
 	}
 	return g

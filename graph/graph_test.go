@@ -56,7 +56,12 @@ func TestCompleteGraph(t *testing.T) {
 	fmt.Println(g)
 }
 
-func TestRandomeGraph(t *testing.T) {
-	g := NewRandomGraph(10, 100)
+func TestRandomGraph(t *testing.T) {
+	g := NewRandomDensityGraph(10, 100)
+	fmt.Println(g)
+}
+
+func TestRandomEdgeGraph(t *testing.T) {
+	g := NewRandomEdgeGraph(10, 15)
 	fmt.Println(g)
 }
