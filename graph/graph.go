@@ -7,7 +7,8 @@ import (
 
 // A Graph is a simple undirected graph
 type Graph struct {
-	Nodes []*Node
+	Nodes     []*Node
+	sortOrder []int
 }
 
 // A Node is a single element of the graph.  It might contain
@@ -19,9 +20,10 @@ type Node struct {
 
 // New constructs a new zeroed graph with n nodes and no edges
 func New(n int) *Graph {
-	g := &Graph{make([]*Node, n)}
+	g := &Graph{make([]*Node, n), make([]int, n)}
 	for i := range g.Nodes {
 		g.Nodes[i] = &Node{Value: i}
+		g.sortOrder[i] = i
 	}
 	return g
 }
@@ -101,10 +103,11 @@ func (b ByDegree) Len() int { return len(b.Nodes) }
 
 // Less returns true if i has greater degree than j
 func (b ByDegree) Less(i, j int) bool {
-	return b.Nodes[i].Degree() > b.Nodes[j].Degree()
+	iNode, jNode := b.sortOrder[i], b.sortOrder[j]
+	return b.Nodes[iNode].Degree() > b.Nodes[jNode].Degree()
 }
 
 // Swap changes the rank indicated in the MaxDegree slice
 func (b ByDegree) Swap(i, j int) {
-	b.Nodes[i], b.Nodes[j] = b.Nodes[j], b.Nodes[i]
+	b.sortOrder[i], b.sortOrder[j] = b.sortOrder[j], b.sortOrder[i]
 }

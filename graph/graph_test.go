@@ -93,11 +93,12 @@ func TestDegreeSort(t *testing.T) {
 	g.AddEdge(3, 2)
 	g.AddEdge(3, 1)
 	sort.Sort(ByDegree(*g))
-	if g.Nodes[0].Value != 3 {
+	if g.Nodes[g.sortOrder[0]].Value != 3 {
 		t.Errorf("Node 3 should have highest degree.\n"+
 			"Sort resulted with %d having highest degree.\n", g.Nodes[0].Value)
 	}
-	for i, v := range g.Nodes {
-		fmt.Printf("Index: %d, Value: %d, Degree: %d\n", i, v.Value, v.Degree())
-	}
+	g = NewRandomDensityGraph(10, 25)
+	sort.Sort(ByDegree(*g))
+	fmt.Println(g)
+	fmt.Println(g.sortOrder)
 }
