@@ -66,6 +66,11 @@ func (n *Node) removeEdge(e int) {
 	}
 }
 
+// Degree provides the degree of the node, n.
+func (n Node) Degree() int {
+	return len(n.Edges)
+}
+
 func (g *Graph) String() string {
 	var buf bytes.Buffer
 	buf.WriteString("strict graph {\n")
@@ -86,4 +91,20 @@ func (n Node) String() string {
 	}
 	buf.WriteString("\n")
 	return buf.String()
+}
+
+// ByDegree implements sort.Interface for a Graph.
+type ByDegree Graph
+
+// Len is used for sorting by maximum degree
+func (b ByDegree) Len() int { return len(b.Nodes) }
+
+// Less returns true if i has greater degree than j
+func (b ByDegree) Less(i, j int) bool {
+	return b.Nodes[i].Degree() > b.Nodes[j].Degree()
+}
+
+// Swap changes the rank indicated in the MaxDegree slice
+func (b ByDegree) Swap(i, j int) {
+	b.Nodes[i], b.Nodes[j] = b.Nodes[j], b.Nodes[i]
 }

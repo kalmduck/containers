@@ -2,6 +2,7 @@ package graph
 
 import (
 	"fmt"
+	"sort"
 	"testing"
 )
 
@@ -64,4 +65,39 @@ func TestRandomGraph(t *testing.T) {
 func TestRandomEdgeGraph(t *testing.T) {
 	g := NewRandomEdgeGraph(10, 15)
 	fmt.Println(g)
+}
+
+func TestConnectivity(t *testing.T) {
+	g := New(2)
+	if g.PairwiseConnectivity() != 0 {
+		t.Error("Non-zero connectivity for edgeless graph")
+	}
+	g.AddEdge(0, 1)
+	if pc := g.PairwiseConnectivity(); pc != 1 {
+		t.Errorf("Two-node, one edge should get pc of 2\nactual %d", pc)
+	}
+	g = New(3)
+	g.AddEdge(0, 1)
+	g.AddEdge(1, 2)
+	if pc := g.PairwiseConnectivity(); pc != 2 {
+		t.Errorf("three-node, two edge should get pc of 6\nactual %d", pc)
+	}
+	g.AddEdge(0, 2)
+	if pc := g.PairwiseConnectivity(); pc != 2 {
+		t.Errorf("three-node, three-edge should get pc of 6\nactual %d", pc)
+	}
+}
+
+func TestDegreeSort(t *testing.T) {
+	g := New(4)
+	g.AddEdge(3, 2)
+	g.AddEdge(3, 1)
+	sort.Sort(ByDegree(*g))
+	if g.Nodes[0].Value != 3 {
+		t.Errorf("Node 3 should have highest degree.\n"+
+			"Sort resulted with %d having highest degree.\n", g.Nodes[0].Value)
+	}
+	for i, v := range g.Nodes {
+		fmt.Printf("Index: %d, Value: %d, Degree: %d\n", i, v.Value, v.Degree())
+	}
 }
