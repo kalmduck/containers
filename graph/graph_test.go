@@ -97,8 +97,10 @@ func TestDegreeSort(t *testing.T) {
 		t.Errorf("Node 3 should have highest degree.\n"+
 			"Sort resulted with %d having highest degree.\n", g.Nodes[0].Value)
 	}
-	g = NewRandomDensityGraph(10, 25)
+	g = NewRandomEdgeGraph(20, 25)
 	sort.Sort(ByDegree(*g))
+	pc := g.PairwiseConnectivity()
+	fmt.Printf("Pairwise Connectivity = %d\n", pc)
 	fmt.Println(g)
 	fmt.Println(g.sortOrder)
 }
