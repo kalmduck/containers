@@ -16,10 +16,10 @@ func TestNew(t *testing.T) {
 func TestAddEdge(t *testing.T) {
 	g := New(5)
 	g.AddEdge(1, 2)
-	if g.Nodes[1].Edges[0] != 2 {
+	if _, ok := g.Nodes[1].Edges[2]; !ok {
 		t.Error("Edge a->b not created.")
 	}
-	if g.Nodes[2].Edges[0] != 1 {
+	if _, ok := g.Nodes[2].Edges[1]; !ok {
 		t.Error("Edge b->a not created.")
 	}
 	g.AddEdge(2, 1)

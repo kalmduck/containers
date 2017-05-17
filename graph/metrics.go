@@ -22,7 +22,7 @@ func pConSub(g *Graph, n, p int, visited []bool) int {
 	visited[n] = true
 	var connections int
 	node := g.Nodes[n]
-	for _, con := range node.Edges {
+	for con := range node.Edges {
 		if !visited[con] {
 			connections++
 			connections += pConSub(g, con, n, visited)

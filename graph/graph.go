@@ -15,14 +15,14 @@ type Graph struct {
 // some value. Also contains a list of edges.
 type Node struct {
 	Value int
-	Edges []int
+	Edges map[int]struct{}
 }
 
 // New constructs a new zeroed graph with n nodes and no edges
 func New(n int) *Graph {
 	g := &Graph{make([]*Node, n), make([]int, n)}
 	for i := range g.Nodes {
-		g.Nodes[i] = &Node{Value: i}
+		g.Nodes[i] = &Node{Value: i, Edges: make(map[int]struct{})}
 		g.sortOrder[i] = i
 	}
 	return g
@@ -35,12 +35,12 @@ func (g *Graph) AddEdge(a, b int) bool {
 }
 
 func (n *Node) addEdge(e int) bool {
-	for _, v := range n.Edges {
+	for v := range n.Edges {
 		if v == e {
 			return false
 		}
 	}
-	n.Edges = append(n.Edges, e)
+	n.Edges[e] = struct{}{}
 	return true
 }
 
@@ -49,7 +49,7 @@ func (g *Graph) RemoveNode(n int) {
 	if n < 0 || n > len(g.Nodes) {
 		return
 	}
-	for _, v := range g.Nodes[n].Edges {
+	for v := range g.Nodes[n].Edges {
 		g.removeEdge(n, v)
 	}
 }
@@ -60,9 +60,9 @@ func (g *Graph) removeEdge(a, b int) {
 }
 
 func (n *Node) removeEdge(e int) {
-	for i, v := range n.Edges {
+	for v := range n.Edges {
 		if v == e {
-			n.Edges = append(n.Edges[:i], n.Edges[i+1:]...)
+			delete(n.Edges, v)
 			return
 		}
 	}
@@ -86,7 +86,7 @@ func (g *Graph) String() string {
 func (n Node) String() string {
 	var buf bytes.Buffer
 	buf.WriteString(strconv.Itoa(n.Value) + "; ")
-	for _, e := range n.Edges {
+	for e := range n.Edges {
 		if e > n.Value {
 			buf.WriteString(strconv.Itoa(n.Value) + " -- " + strconv.Itoa(e) + "; ")
 		}
