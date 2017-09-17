@@ -7,7 +7,7 @@ import (
 
 // A Graph is a simple undirected graph
 type Graph struct {
-	Nodes     []*Node
+	nodes     []*Node
 	sortOrder []int
 }
 
@@ -21,17 +21,39 @@ type Node struct {
 // New constructs a new zeroed graph with n nodes and no edges
 func New(n int) *Graph {
 	g := &Graph{make([]*Node, n), make([]int, n)}
-	for i := range g.Nodes {
-		g.Nodes[i] = &Node{Value: i, Edges: make(map[int]struct{})}
+	for i := range g.nodes {
+		g.nodes[i] = &Node{Value: i, Edges: make(map[int]struct{})}
 		g.sortOrder[i] = i
 	}
 	return g
 }
 
+// GetNode provides an accessor for a node without exposing the entire node
+// list.
+func (g *Graph) GetNode(n int) *Node {
+	return g.nodes[n]
+}
+
+// Iter provides a method for iterating over the nodes without directly
+// accessing the underlying structure.
+// usage:
+//	for i := range g.Iter() {
+//		n := g.GetNode(i)
+//		... do stuff
+//	}
+func (g *Graph) Iter() []struct{} {
+	return make([]struct{}, len(g.nodes))
+}
+
+// Size returns the number of nodes in the graph
+func (g *Graph) Size() int {
+	return len(g.nodes)
+}
+
 // AddEdge returns true if the node was successfully added to the graph.
 // returns false if the edge already exists in the graph
 func (g *Graph) AddEdge(a, b int) bool {
-	return (g.Nodes[a].addEdge(b) && g.Nodes[b].addEdge(a))
+	return (g.nodes[a].addEdge(b) && g.nodes[b].addEdge(a))
 }
 
 func (n *Node) addEdge(e int) bool {
@@ -46,17 +68,17 @@ func (n *Node) addEdge(e int) bool {
 
 // RemoveNode cuts a node out of the graph by removing all edges to/from it.
 func (g *Graph) RemoveNode(n int) {
-	if n < 0 || n > len(g.Nodes) {
+	if n < 0 || n > len(g.nodes) {
 		return
 	}
-	for v := range g.Nodes[n].Edges {
+	for v := range g.nodes[n].Edges {
 		g.removeEdge(n, v)
 	}
 }
 
 func (g *Graph) removeEdge(a, b int) {
-	g.Nodes[a].removeEdge(b)
-	g.Nodes[b].removeEdge(a)
+	g.nodes[a].removeEdge(b)
+	g.nodes[b].removeEdge(a)
 }
 
 func (n *Node) removeEdge(e int) {
@@ -76,7 +98,7 @@ func (n Node) Degree() int {
 func (g *Graph) String() string {
 	var buf bytes.Buffer
 	buf.WriteString("strict graph {\n")
-	for _, n := range g.Nodes {
+	for _, n := range g.nodes {
 		buf.WriteString(n.String())
 	}
 	buf.WriteString("}\n")
@@ -99,12 +121,12 @@ func (n Node) String() string {
 type ByDegree Graph
 
 // Len is used for sorting by maximum degree
-func (b ByDegree) Len() int { return len(b.Nodes) }
+func (b ByDegree) Len() int { return len(b.nodes) }
 
 // Less returns true if i has greater degree than j
 func (b ByDegree) Less(i, j int) bool {
 	iNode, jNode := b.sortOrder[i], b.sortOrder[j]
-	return b.Nodes[iNode].Degree() > b.Nodes[jNode].Degree()
+	return b.nodes[iNode].Degree() > b.nodes[jNode].Degree()
 }
 
 // Swap changes the rank indicated in the MaxDegree slice

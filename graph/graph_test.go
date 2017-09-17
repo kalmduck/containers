@@ -8,7 +8,7 @@ import (
 
 func TestNew(t *testing.T) {
 	g := New(5)
-	if len(g.Nodes) != 5 {
+	if len(g.nodes) != 5 {
 		t.Error("Length is off in New().\n")
 	}
 }
@@ -16,17 +16,17 @@ func TestNew(t *testing.T) {
 func TestAddEdge(t *testing.T) {
 	g := New(5)
 	g.AddEdge(1, 2)
-	if _, ok := g.Nodes[1].Edges[2]; !ok {
+	if _, ok := g.nodes[1].Edges[2]; !ok {
 		t.Error("Edge a->b not created.")
 	}
-	if _, ok := g.Nodes[2].Edges[1]; !ok {
+	if _, ok := g.nodes[2].Edges[1]; !ok {
 		t.Error("Edge b->a not created.")
 	}
 	g.AddEdge(2, 1)
-	if len(g.Nodes[1].Edges) != 1 {
+	if len(g.nodes[1].Edges) != 1 {
 		t.Error("Edge duplicated.")
 	}
-	if len(g.Nodes[2].Edges) != 1 {
+	if len(g.nodes[2].Edges) != 1 {
 		t.Error("Edge duplicated.")
 	}
 }
@@ -35,7 +35,7 @@ func TestRemoveEdge(t *testing.T) {
 	g := New(2)
 	g.AddEdge(0, 1)
 	g.removeEdge(0, 1)
-	if len(g.Nodes[0].Edges) != 0 || len(g.Nodes[1].Edges) != 0 {
+	if len(g.nodes[0].Edges) != 0 || len(g.nodes[1].Edges) != 0 {
 		t.Error("Edge not removed.")
 	}
 }
@@ -46,7 +46,7 @@ func TestRemoveNode(t *testing.T) {
 	g.AddEdge(0, 2)
 	g.AddEdge(1, 2)
 	g.RemoveNode(0)
-	if len(g.Nodes[0].Edges) != 0 || len(g.Nodes[1].Edges) != 1 {
+	if len(g.nodes[0].Edges) != 0 || len(g.nodes[1].Edges) != 1 {
 		t.Error("Node not removed.")
 	}
 	g.RemoveNode(4)
@@ -93,9 +93,9 @@ func TestDegreeSort(t *testing.T) {
 	g.AddEdge(3, 2)
 	g.AddEdge(3, 1)
 	sort.Sort(ByDegree(*g))
-	if g.Nodes[g.sortOrder[0]].Value != 3 {
+	if g.nodes[g.sortOrder[0]].Value != 3 {
 		t.Errorf("Node 3 should have highest degree.\n"+
-			"Sort resulted with %d having highest degree.\n", g.Nodes[0].Value)
+			"Sort resulted with %d having highest degree.\n", g.nodes[0].Value)
 	}
 	g = NewRandomEdgeGraph(20, 25)
 	sort.Sort(ByDegree(*g))
